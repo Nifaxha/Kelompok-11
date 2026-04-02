@@ -5,15 +5,14 @@
 #include "BlindRule.h"
 #include "RewardRule.h"
 
-class GameManager {
+class GameManager{
+public:
+    void runSession();
+
 private:
     HandGenerator handGenerator;
     HandPlayer handPlayer;
     ScoringRule scoringRule;
     BlindRule blindRule;
     RewardRule rewardRule;
-
-public:
-    GameManager();
-    void runSession();
 };
