@@ -1,7 +1,18 @@
+#include <iostream>
 #include "FlushChecker.h"
-#include "HandUtils.h"
 
-HandRank FlushChecker::check(const Hand& hand) {
-    if (HandUtils::isFlush(hand)) return HandRank::FLUSH;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
+bool isFlush(const Hand& hand){
+    return hand.value == 6;
+}
+
+HandRank FlushChecker::check(const Hand& hand){
+    if (isFlush(hand)){
+        std::cout << "Detected FLUSH\n";
+        return HandRank::FLUSH;
+    }
+
+    if (nextChecker)
+        return nextChecker->check(hand);
+
+    return HandRank::HIGH_CARD;
 }
