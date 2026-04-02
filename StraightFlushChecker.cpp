@@ -1,7 +1,18 @@
+#include <iostream>
 #include "StraightFlushChecker.h"
-#include "HandUtils.h"
 
-HandRank StraightFlushChecker::check(const Hand& hand) {
-    if (HandUtils::isStraightFlush(hand)) return HandRank::STRAIGHT_FLUSH;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
+bool isStraightFlush(const Hand& hand){
+    return hand.value == 9;
+}
+
+HandRank StraightFlushChecker::check(const Hand& hand){
+    if (isStraightFlush(hand)){
+        std::cout << "Detected STRAIGHT FLUSH\n";
+        return HandRank::STRAIGHT_FLUSH;
+    }
+
+    if (nextChecker)
+        return nextChecker->check(hand);
+
+    return HandRank::HIGH_CARD;
 }
