@@ -1,6 +1,6 @@
 #pragma once
 
-class HandPlayer {
+class HandPlayer{
 public:
     void playHand();
 };
