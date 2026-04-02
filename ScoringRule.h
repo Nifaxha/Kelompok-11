@@ -1,6 +1,6 @@
 #pragma once
 #include "Hand.h"
-#include "HandRank.h"
+#include "PokerHandChecker.h"
 #include "FlushFiveChecker.h"
 #include "FlushHouseChecker.h"
 #include "FiveOfAKindChecker.h"
@@ -15,7 +15,11 @@
 #include "PairChecker.h"
 #include "HighCardChecker.h"
 
-class ScoringRule {
+class ScoringRule{
+public:
+    ScoringRule();
+    int scoreHand(const Hand& hand);
+
 private:
     FlushFiveChecker flushFiveChecker;
     FlushHouseChecker flushHouseChecker;
@@ -32,9 +36,4 @@ private:
     HighCardChecker highCardChecker;
 
     int convertRankToScore(HandRank rank);
-
-public:
-    ScoringRule();
-    HandRank classifyHand(const Hand& hand);
-    int scoreHand(const Hand& hand);
 };
