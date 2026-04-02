@@ -1,7 +1,7 @@
-#include "FiveOfAKindChecker.h"
-#include "HandUtils.h"
+#pragma once
+#include "PokerHandChecker.h"
 
-HandRank FiveOfAKindChecker::check(const Hand& hand) {
-    if (HandUtils::isFiveOfAKind(hand)) return HandRank::FIVE_OF_A_KIND;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
-}
+class RoyalFlushChecker : public PokerHandChecker{
+public:
+    HandRank check(const Hand& hand) override;
+};

@@ -1,7 +1,7 @@
-#include "FlushHouseChecker.h"
-#include "HandUtils.h"
+#pragma once
+#include "PokerHandChecker.h"
 
-HandRank FlushHouseChecker::check(const Hand& hand) {
-    if (HandUtils::isFlushHouse(hand)) return HandRank::FLUSH_HOUSE;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
-}
+class FiveOfAKindChecker : public PokerHandChecker{
+public:
+    HandRank check(const Hand& hand) override;
+};

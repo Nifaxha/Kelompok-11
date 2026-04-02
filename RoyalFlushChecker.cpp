@@ -1,7 +1,18 @@
+#include <iostream>
 #include "RoyalFlushChecker.h"
-#include "HandUtils.h"
 
-HandRank RoyalFlushChecker::check(const Hand& hand) {
-    if (HandUtils::isRoyalFlush(hand)) return HandRank::ROYAL_FLUSH;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
+bool isRoyalFlush(const Hand& hand){
+    return hand.value == 10;
+}
+
+HandRank RoyalFlushChecker::check(const Hand& hand){
+    if (isRoyalFlush(hand)){
+        std::cout << "Detected ROYAL FLUSH\n";
+        return HandRank::ROYAL_FLUSH;
+    }
+
+    if (nextChecker)
+        return nextChecker->check(hand);
+
+    return HandRank::HIGH_CARD;
 }
