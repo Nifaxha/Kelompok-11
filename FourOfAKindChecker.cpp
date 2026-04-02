@@ -1,7 +1,18 @@
+#include <iostream>
 #include "FourOfAKindChecker.h"
-#include "HandUtils.h"
 
-HandRank FourOfAKindChecker::check(const Hand& hand) {
-    if (HandUtils::isFourOfAKind(hand)) return HandRank::FOUR_OF_A_KIND;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
+bool isFourOfAKind(const Hand& hand){
+    return hand.value == 8;
+}
+
+HandRank FourOfAKindChecker::check(const Hand& hand){
+    if (isFourOfAKind(hand)){
+        std::cout << "Detected FOUR OF A KIND\n";
+        return HandRank::FOUR_OF_A_KIND;
+    }
+
+    if (nextChecker)
+        return nextChecker->check(hand);
+
+    return HandRank::HIGH_CARD;
 }
