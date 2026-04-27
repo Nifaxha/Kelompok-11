@@ -1,5 +1,5 @@
 #pragma once
-#include "../Logic/PokerHandChecker.h"
+#include "../Mechanics/PokerHandChecker.h"
 
 class FourOfAKindChecker : public PokerHandChecker{
 public:

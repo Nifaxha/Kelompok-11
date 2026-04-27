@@ -1,5 +1,5 @@
 #pragma once
-#include "../Logic/PokerHandChecker.h"
+#include "../Mechanics/PokerHandChecker.h"
 
 class FlushHouseChecker : public PokerHandChecker{
 public:
