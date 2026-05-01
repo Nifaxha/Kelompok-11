@@ -1,13 +1,22 @@
 #include <iostream>
 #include "GameManager.h"
 
-void GameManager::runSession(){
+void GameManager::runSession() {
     std::cout << "=== Run Started ===\n";
 
-    Hand hand = handGenerator.generateHand();
-    handPlayer.playHand();
+    // 1. Generate kartu acak
+    Hand generatedHand = handGenerator.generateHand();
 
-    int score = scoringRule.scoreHand(hand);
+    // 2. Pemain memilih kartu dari tangannya
+    ChosenHand chosenHand = handPlayer.playHand(generatedHand);
+
+    // 3. Sistem mengubah ChosenHand ke Hand dasar untuk dievaluasi
+    Hand handToScore = chosenHand.toHand();
+
+    // 4. Proses skoring melewati Chain of Responsibility
+    int score = scoringRule.scoreHand(handToScore);
+
+    // 5. Cek kemenangan & Hadiah
     bool win = blindRule.checkBlind(score);
     int reward = rewardRule.earnMoney(win, score);
 
