@@ -1,7 +1,18 @@
+#include <iostream>
 #include "FullHouseChecker.h"
-#include "HandUtils.h"
 
-HandRank FullHouseChecker::check(const Hand& hand) {
-    if (HandUtils::isFullHouse(hand)) return HandRank::FULL_HOUSE;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
+bool isFullHouse(const Hand& hand){
+    return hand.value == 7;
+}
+
+HandRank FullHouseChecker::check(const Hand& hand){
+    if (isFullHouse(hand)){
+        std::cout << "Detected FULL HOUSE\n";
+        return HandRank::FULL_HOUSE;
+    }
+
+    if (nextChecker)
+        return nextChecker->check(hand);
+
+    return HandRank::HIGH_CARD;
 }
