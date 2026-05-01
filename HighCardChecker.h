@@ -1,7 +1,7 @@
 #pragma once
-#include "PokerHandChecker.h"
+#include "../Mechanics/PokerHandChecker.h"
 
-class HighCardChecker : public PokerHandChecker {
+class HighCardChecker : public PokerHandChecker{
 public:
     HandRank check(const Hand& hand) override;
 };
