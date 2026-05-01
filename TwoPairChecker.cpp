@@ -1,7 +1,18 @@
+#include <iostream>
 #include "TwoPairChecker.h"
-#include "HandUtils.h"
 
-HandRank TwoPairChecker::check(const Hand& hand) {
-    if (HandUtils::isTwoPair(hand)) return HandRank::TWO_PAIR;
-    return nextChecker ? nextChecker->check(hand) : HandRank::HIGH_CARD;
+bool isTwoPair(const Hand& hand){
+    return hand.value == 3;
+}
+
+HandRank TwoPairChecker::check(const Hand& hand){
+    if (isTwoPair(hand)){
+        std::cout << "Detected TWO PAIR\n";
+        return HandRank::TWO_PAIR;
+    }
+
+    if (nextChecker)
+        return nextChecker->check(hand);
+
+    return HandRank::HIGH_CARD;
 }
