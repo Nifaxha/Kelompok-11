@@ -1,21 +1,25 @@
 #pragma once
 #include "Hand.h"
-#include "HandRank.h"
-#include "FlushFiveChecker.h"
-#include "FlushHouseChecker.h"
-#include "FiveOfAKindChecker.h"
-#include "RoyalFlushChecker.h"
-#include "StraightFlushChecker.h"
-#include "FourOfAKindChecker.h"
-#include "FullHouseChecker.h"
-#include "FlushChecker.h"
-#include "StraightChecker.h"
-#include "ThreeOfAKindChecker.h"
-#include "TwoPairChecker.h"
-#include "PairChecker.h"
-#include "HighCardChecker.h"
+#include "../System/FiveOfAKindChecker.h"
+#include "../System/FlushFiveChecker.h"
+#include "../System/FlushHouseChecker.h"
+#include "../System/FiveOfAKindChecker.h"
+#include "../System/RoyalFlushChecker.h"
+#include "../System/StraightFlushChecker.h"
+#include "../System/FourOfAKindChecker.h"
+#include "../System/FullHouseChecker.h"
+#include "../System/FlushChecker.h"
+#include "../System/StraightChecker.h"
+#include "../System/ThreeOfAKindChecker.h"
+#include "../System/TwoPairChecker.h"
+#include "../System/PairChecker.h"
+#include "../System/HighCardChecker.h"
 
-class ScoringRule {
+class ScoringRule{
+public:
+    ScoringRule();
+    int scoreHand(const Hand& hand);
+
 private:
     FlushFiveChecker flushFiveChecker;
     FlushHouseChecker flushHouseChecker;
@@ -32,9 +36,4 @@ private:
     HighCardChecker highCardChecker;
 
     int convertRankToScore(HandRank rank);
-
-public:
-    ScoringRule();
-    HandRank classifyHand(const Hand& hand);
-    int scoreHand(const Hand& hand);
 };
