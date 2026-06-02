@@ -2,9 +2,9 @@
 #include <string>
 #include <memory>
 #include "RunSessionState.h"
-#include "../Deck.h" // Tambahkan ini agar bisa mengakses Deck
+#include "../Deck.h" // Tambahkan ini agar command bisa modifikasi deck
 
-// Sesuai dokumen wajib: Start, NextBlind, NextAnte
+// Enum Timing diubah sesuai dokumen PDF
 enum class CommandTiming {
     Start,
     NextBlind,
@@ -17,11 +17,11 @@ public:
     virtual std::string getName() const = 0;
     virtual std::string getDescription() const = 0;
     
-    // Tambahkan parameter Deck& agar command bisa memodifikasi deck
+    // Tambahkan parameter Deck& 
     virtual void execute(RunSessionState& state, Deck& deck) = 0; 
 };
 
-// --- Implementasi Command Spesifik Wajib ---
+// --- Implementasi Command ---
 class BonusHandCommand : public RewardCommand {
 public:
     std::string getName() const override { return "Bonus Hand"; }
@@ -31,12 +31,13 @@ public:
     }
 };
 
+// Ubah FreeReroll menjadi FreePlayingCard sesuai PDF
 class FreePlayingCard : public RewardCommand {
 public:
     std::string getName() const override { return "Free Playing Card"; }
     std::string getDescription() const override { return "Gain free playing card, added to the deck."; }
     void execute(RunSessionState& state, Deck& deck) override {
-        deck.addRandomCard(); // Kita akan tambahkan fungsi ini di Deck
+        deck.addRandomCard(); 
     }
 };
 
