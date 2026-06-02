@@ -1,67 +1,99 @@
 #include <iostream>
 #include "GameManager.h"
 #include "Jokers/JokerFactory.h"
+#include "Blinds/SmallBlindState.h"
 
-GameManager::GameManager() : playerMoney(0) {}
+GameManager::GameManager() {
+    sessionState.ante = 1;
+    sessionState.playerMoney = 0;
+    currentBlind = std::make_unique<SmallBlindState>(); // Mulai dari Small Blind
+}
+
+void GameManager::executePendingCommands(CommandTiming timing) {
+    for (auto& pending : pendingCommands) {
+        if (!pending.executed && pending.timing == timing && pending.command != nullptr) {
+            std::cout << "[REWARD TERPICU] Mengeksekusi: " << pending.command->getName() << "\n";
+            pending.command->execute(sessionState);
+            pending.executed = true;
+        }
+    }
+}
 
 void GameManager::runSession() {
     std::cout << "=== Balatro Clone Started ===\n";
     bool keepPlaying = true;
-    int round = 1;
 
     while (keepPlaying) {
         std::cout << "\n====================================\n";
-        std::cout << "              ROUND " << round << "\n";
+        std::cout << "     ANTE " << sessionState.ante << " | " << currentBlind->getName() << "\n";
         std::cout << "====================================\n";
 
-        // 1. Setup Awal Ronde (Reset Deck dan Tangan)
+        // Reset resource standar untuk Blind baru
+        sessionState.remainingPlays = 4;
+        sessionState.remainingDiscards = 3;
+
+        // Eksekusi efek tertunda yang aktif di Blind Baru (Contoh: Bonus Hand)
+        executePendingCommands(CommandTiming::NextBlind);
+
+        int targetScore = currentBlind->getTargetScore(sessionState.ante);
+        int totalRoundScore = 0;
+
+        // 1. Tawarkan Menu Skip (Kecuali Boss Blind yang mengembalikan nullptr/Immediate execute)
+        char menuAwal;
+        std::cout << "\nTarget Skor: " << targetScore << " | Hadiah: $" << currentBlind->getRewardMoney() << "\n";
+        std::cout << "Aksi: [P]lay Blind | [S]kip Blind\n";
+        std::cout << "Pilihanmu: ";
+        std::cin >> menuAwal;
+        std::cin.ignore();
+
+        if (menuAwal == 'S' || menuAwal == 's') {
+            PendingCommand skipReward = currentBlind->createSkipRewardCommand();
+            if (skipReward.command != nullptr) {
+                std::cout << "[SISTEM] Kamu melakukan Skip! Menambahkan antrean reward: " << skipReward.command->getName() << "\n";
+                pendingCommands.push_back(std::move(skipReward));
+                currentBlind = currentBlind->nextState(sessionState.ante);
+                continue; // Lanjut ke iterasi blind berikutnya
+            } else {
+                std::cout << "[SISTEM] Blind ini tidak bisa di-skip!\n";
+            }
+        }
+
+        // 2. Setup Permainan Jika Tidak Di-Skip
         deck.resetAndShuffle();
         handState.clearHand();
         handState.drawFromDeck(deck);
-
-        // State Batas Bermain (4 Play, 3 Discard)
-        int remainingPlays = 4;
-        int remainingDiscards = 3;
-        int totalRoundScore = 0;
-        int targetScore = round * 500; // Contoh target skor yang makin naik tiap ronde
         bool win = false;
 
-        // 2. INNER LOOP: Fase Aksi Pemain
-        while (remainingPlays > 0 && !win) {
-            std::cout << "\n[ STATUS RONDE " << round << " ]\n";
-            std::cout << "Target Skor   : " << targetScore << "\n";
-            std::cout << "Skor Saat Ini : " << totalRoundScore << "\n";
-            std::cout << "Sisa Play [" << remainingPlays << "] | Sisa Discard [" << remainingDiscards << "]\n";
+        // 3. INNER LOOP: Fase Permainan Kartu
+        while (sessionState.remainingPlays > 0 && !win) {
+            std::cout << "\n[ STATUS: " << currentBlind->getName() << " ]\n";
+            std::cout << "Skor Saat Ini : " << totalRoundScore << " / " << targetScore << "\n";
+            std::cout << "Sisa Play [" << sessionState.remainingPlays << "] | Sisa Discard [" << sessionState.remainingDiscards << "]\n";
 
-            // Tampilkan kartu dan minta pemain memilih kartunya
             Hand currentHand = handState.getHandAsStruct();
             ChosenHand chosenHand = handPlayer.playHand(currentHand);
 
-            // Minta keputusan aksi (Play atau Discard)
             char aksi;
-            std::cout << "\nApakah kamu ingin [P]lay atau [D]iscard kartu-kartu tersebut? (P/D): ";
+            std::cout << "\nApakah kamu ingin [P]lay atau [D]iscard? (P/D): ";
             std::cin >> aksi;
             std::cin.ignore();
 
             if (aksi == 'D' || aksi == 'd') {
-                if (remainingDiscards > 0) {
-                    // MEKANIK DISCARD
+                if (sessionState.remainingDiscards > 0) {
                     handState.removePlayedCards(chosenHand);
-                    std::cout << "[SISTEM] Kamu membuang " << chosenHand.selectedCards.size() << " kartu.\n";
-                    handState.drawFromDeck(deck); // Tarik kartu pengganti
-                    remainingDiscards--;
+                    std::cout << "[SISTEM] Membuang " << chosenHand.selectedCards.size() << " kartu.\n";
+                    handState.drawFromDeck(deck);
+                    sessionState.remainingDiscards--;
                 } else {
-                    std::cout << "[SISTEM] Sisa Discard kamu habis! Aksi dibatalkan.\n";
+                    std::cout << "[SISTEM] Discard habis!\n";
                 }
-                continue; // Ulangi loop untuk minta aksi lagi
+                continue; 
             } 
             else if (aksi == 'P' || aksi == 'p') {
-                // MEKANIK PLAY
                 Hand handToScore = chosenHand.toHand();
-                handState.removePlayedCards(chosenHand); // Hapus kartu yang dimainkan dari tangan
-                remainingPlays--;
+                handState.removePlayedCards(chosenHand);
+                sessionState.remainingPlays--;
 
-                // --- SISTEM SKOR DENGAN SCORECONTEXT & MULTIPLIER ---
                 IScoring* gameScoring = new ScoringRule();
                 for (JokerType joker : ownedJokers) {
                     gameScoring = JokerFactory::createJoker(joker, gameScoring);
@@ -72,50 +104,46 @@ void GameManager::runSession() {
                 
                 std::cout << "\n--- HASIL PLAY ---\n";
                 std::cout << "Chips: " << finalContext.chips << " x Mult: " << finalContext.mult << "\n";
-                std::cout << "Skor Didapat: " << scoreThisHand << "\n";
-                std::cout << "------------------\n";
+                std::cout << "Skor: " << scoreThisHand << "\n------------------\n";
 
                 totalRoundScore += scoreThisHand;
                 delete gameScoring; 
-                // -----------------------------
 
-                // Cek menang atau tarik kartu baru
                 if (totalRoundScore >= targetScore) {
                     win = true;
-                } else if (remainingPlays > 0) {
-                    handState.drawFromDeck(deck); // Hanya tarik kartu baru jika ronde belum selesai
+                } else if (sessionState.remainingPlays > 0) {
+                    handState.drawFromDeck(deck);
                 }
-            } else {
-                std::cout << "[SISTEM] Pilihan tidak valid, silakan ulangi.\n";
             }
-        } // Akhir dari Inner Loop (Ronde selesai)
+        } // Akhir Inner Loop
 
-        // 3. Evaluasi Hasil Akhir Ronde
-        std::cout << "\n====================================\n";
+        // 4. Evaluasi Akhir Ronde
         if (win) {
-            std::cout << "[SISTEM] TARGET TERCAPAI! (" << totalRoundScore << " / " << targetScore << ")\n";
-            int reward = rewardRule.earnMoney(true, totalRoundScore); 
-            playerMoney += reward + (remainingPlays * 2); // Tambahan bonus jika masih ada sisa Play
+            std::cout << "\n[SISTEM] BLIND DEFEATED! (" << totalRoundScore << " / " << targetScore << ")\n";
+            sessionState.playerMoney += currentBlind->getRewardMoney(); 
             
-            std::cout << "Dompet Saat Ini: $" << playerMoney << "\n";
-            shop.enterShop(playerMoney, ownedJokers);
+            // Eksekusi reward tertunda untuk Shop (Contoh: Free Reroll)
+            executePendingCommands(CommandTiming::NextShop);
+            
+            shop.enterShop(sessionState.playerMoney, ownedJokers);
+            
+            // Transisi ke State Berikutnya
+            int oldAnte = sessionState.ante;
+            currentBlind = currentBlind->nextState(sessionState.ante);
+            
+            if (sessionState.ante > oldAnte) {
+                executePendingCommands(CommandTiming::NextAnte);
+            }
         } else {
-            std::cout << "[SISTEM] GAME OVER! Skor akhirmu " << totalRoundScore << ", gagal mencapai target " << targetScore << ".\n";
-            keepPlaying = false; // Game over jika gagal
+            std::cout << "\n[SISTEM] GAME OVER! Skor " << totalRoundScore << " tidak mencapai " << targetScore << ".\n";
+            keepPlaying = false;
             continue;
         }
 
         char pilihanLanjut;
-        std::cout << "Lanjut bermain ke ronde berikutnya? (y/n): ";
+        std::cout << "Lanjut bermain? (y/n): ";
         std::cin >> pilihanLanjut;
         std::cin.ignore(); 
-
-        if (pilihanLanjut == 'n' || pilihanLanjut == 'N') {
-            keepPlaying = false;
-        } else {
-            round++;
-        }
+        if (pilihanLanjut == 'n' || pilihanLanjut == 'N') keepPlaying = false;
     }
-
-    std::cout << "\n=== Sesi Berakhir ===\n";
 }
