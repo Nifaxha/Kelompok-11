@@ -1,5 +1,6 @@
 #pragma once
 #include "../IScoring.h"
+#include "../ScoreContext.h"
 
 class JokerDecorator : public IScoring {
 protected:
@@ -13,10 +14,10 @@ public:
     }
 
     // Secara default, teruskan panggilan ke komponen di dalamnya
-    int scoreHand(const Hand& hand) override {
+    ScoreContext scoreHand(const Hand& hand) override {
         if (wrappedScoring) {
             return wrappedScoring->scoreHand(hand);
         }
-        return 0;
+        return {0, 0}; // Kembalikan default ScoreContext jika kosong
     }
 };
