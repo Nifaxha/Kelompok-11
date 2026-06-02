@@ -14,10 +14,9 @@ std::unique_ptr<BlindState> BossBlindState::nextState(int& ante) const {
     // Dideklarasikan langsung sebagai tipe induknya (BlindState)
     return std::unique_ptr<BlindState>(new SmallBlindState());
 
-// ... (biarkan fungsi lainnya tetap sama)
+}
 
 // Tambahkan fungsi tag ini
 std::string BossBlindState::getSkipRewardTag() const {
     return "TIDAK ADA (Boss Blind tidak bisa di-skip!)";
-}
 }
