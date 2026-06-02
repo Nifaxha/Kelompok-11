@@ -1,123 +1,146 @@
-# TECHNICAL DOCUMENTATION
+# ♠️ Balatro Clone - Kelompok 11
 
- Kelompok 11 – Balatro Clone
+## 📖 Overview
 
----
+Balatro Clone merupakan proyek berbasis **C++** yang mengimplementasikan sistem permainan kartu poker yang terinspirasi dari game **Balatro**. Sistem ini dirancang menggunakan konsep **Object-Oriented Programming (OOP)** serta beberapa **Design Pattern** untuk menghasilkan arsitektur yang modular, scalable, dan mudah dikembangkan.
 
-# 1. Overview
+Project ini berfokus pada:
 
-Balatro Clone merupakan aplikasi berbasis C++ yang mengimplementasikan sistem permainan kartu poker yang terinspirasi dari game Balatro. Sistem dirancang menggunakan prinsip Object-Oriented Programming (OOP) dan beberapa Design Pattern untuk menghasilkan arsitektur yang modular, mudah dikembangkan, dan mudah dipelihara.
-
-Fitur utama yang tersedia:
-
-* Deck Management
-* Card Selection
-* Poker Hand Evaluation
-* Score Calculation
-* Joker System
-* Shop System
-* Blind Progression System
+* Evaluasi kombinasi poker
+* Perhitungan skor
+* Sistem Joker
+* Sistem Shop
+* Blind Progression
 * Reward System
 
-Tujuan utama project ini adalah:
+---
 
-* Mengimplementasikan evaluasi kombinasi poker.
-* Mengimplementasikan sistem skor berbasis poker hand.
-* Mengimplementasikan Joker sebagai modifier skor.
-* Mengimplementasikan Shop untuk memperoleh Joker.
-* Mengimplementasikan Blind Progression menggunakan State Pattern.
-* Mengimplementasikan Reward System menggunakan Command Pattern.
+# 🎯 Objectives
+
+Tujuan dari project ini adalah:
+
+1. Mengimplementasikan evaluasi poker hand secara modular.
+2. Mengimplementasikan sistem scoring berbasis kombinasi kartu.
+3. Mengimplementasikan Joker sebagai score modifier.
+4. Mengimplementasikan Shop untuk memperoleh Joker.
+5. Mengimplementasikan Blind Progression menggunakan State Pattern.
+6. Mengimplementasikan Reward System menggunakan Command Pattern.
+7. Menerapkan berbagai Design Pattern dalam pengembangan game system.
 
 ---
 
-# 2. High-Level Architecture
+# 🏗️ System Architecture
 
-Project dibagi menjadi beberapa sistem utama.
+Project dibagi menjadi beberapa sistem utama:
 
-| System           | Responsibility                              |
-| ---------------- | ------------------------------------------- |
-| GameManager      | Mengontrol jalannya permainan               |
-| Deck             | Membuat, mengacak, dan menyediakan kartu    |
-| Card             | Menyimpan data kartu                        |
-| HandState        | Menyimpan kartu yang sedang dimiliki pemain |
-| ChosenHand       | Menyimpan kartu yang dipilih pemain         |
-| HandPlayer       | Mengelola input pemain                      |
-| PokerHandChecker | Mengevaluasi kombinasi poker                |
-| ScoringRule      | Menghitung skor dasar                       |
-| IScoring         | Interface sistem scoring                    |
-| ScoreContext     | Menyimpan data skor yang dapat dimodifikasi |
-| JokerDecorator   | Decorator untuk sistem Joker                |
-| JokerFactory     | Membuat objek Joker                         |
-| Shop             | Menyediakan pembelian Joker                 |
-| BlindState       | Interface State Pattern                     |
-| RewardCommand    | Interface Command Pattern                   |
-| RunSessionState  | Menyimpan state permainan                   |
+| System                | Responsibility                       |
+| --------------------- | ------------------------------------ |
+| GameManager           | Mengontrol jalannya permainan        |
+| Deck                  | Membuat dan mengelola kartu          |
+| HandState             | Menyimpan kartu yang dimiliki pemain |
+| ChosenHand            | Menyimpan kartu yang dipilih pemain  |
+| HandPlayer            | Mengelola input pemain               |
+| Poker Hand Evaluation | Menentukan kombinasi poker           |
+| ScoringRule           | Menghitung skor dasar                |
+| Joker System          | Memodifikasi skor                    |
+| Shop System           | Menyediakan pembelian Joker          |
+| Blind System          | Mengatur progres permainan           |
+| Reward System         | Menjalankan efek reward              |
 
 ---
 
-# 3. Runtime Flow
+# 📂 Project Structure
 
-Alur permainan berjalan sebagai berikut:
+```text
+Kelompok-11
+│
+├── Mechanics
+│   ├── PairChecker
+│   ├── TwoPairChecker
+│   ├── ThreeOfAKindChecker
+│   ├── StraightChecker
+│   ├── FlushChecker
+│   ├── FullHouseChecker
+│   ├── FourOfAKindChecker
+│   ├── StraightFlushChecker
+│   ├── RoyalFlushChecker
+│   └── HighCardChecker
+│
+├── System
+│   │
+│   ├── Card
+│   ├── Deck
+│   ├── Hand
+│   ├── HandState
+│   ├── ChosenHand
+│   ├── HandPlayer
+│   ├── GameManager
+│   ├── PokerHandChecker
+│   ├── ScoringRule
+│   ├── ScoreContext
+│   ├── IScoring
+│   │
+│   ├── Jokers
+│   │   ├── BasicJoker
+│   │   ├── GreedyJoker
+│   │   ├── SpadeJoker
+│   │   ├── JokerDecorator
+│   │   ├── JokerFactory
+│   │   ├── JokerType
+│   │   └── Shop
+│   │
+│   └── Blinds
+│       ├── BlindState
+│       ├── SmallBlindState
+│       ├── BigBlindState
+│       ├── BossBlindState
+│       ├── RewardCommand
+│       └── RunSessionState
+│
+└── Main.cpp
+```
 
+---
+
+# 🔄 Runtime Flow
+
+```text
 main()
-
-↓
-
+    ↓
 GameManager::runSession()
-
-↓
-
+    ↓
 Create Deck
-
-↓
-
+    ↓
 Shuffle Deck
-
-↓
-
+    ↓
 Draw Cards To HandState
-
-↓
-
+    ↓
 Player Selects Cards
-
-↓
-
-Convert To ChosenHand
-
-↓
-
+    ↓
+Create ChosenHand
+    ↓
 Evaluate Poker Hand
-
-↓
-
+    ↓
 Calculate Base Score
-
-↓
-
+    ↓
 Apply Joker Effects
-
-↓
-
+    ↓
 Check Blind Target
-
-↓
-
+    ↓
 Calculate Reward
-
-↓
-
-Print Final Result
+    ↓
+Display Final Result
+```
 
 ---
 
-# 4. Card System
+# 🃏 Card System
 
 ## Card
 
-Card merepresentasikan satu kartu permainan.
+Merepresentasikan satu kartu permainan.
 
-Atribut:
+### Attributes
 
 ```cpp
 struct Card
@@ -129,40 +152,28 @@ struct Card
 
 ### Rank
 
-| Value | Card        |
-| ----- | ----------- |
-| 2–10  | Number Card |
-| 11    | Jack        |
-| 12    | Queen       |
-| 13    | King        |
-| 14    | Ace         |
+| Value  | Card   |
+| ------ | ------ |
+| 2 - 10 | Number |
+| 11     | Jack   |
+| 12     | Queen  |
+| 13     | King   |
+| 14     | Ace    |
 
 ### Suit
 
-| Value | Suit     |
-| ----- | -------- |
-| H     | Hearts   |
-| D     | Diamonds |
-| C     | Clubs    |
-| S     | Spades   |
-
-Card digunakan oleh seluruh sistem:
-
-* Deck
-* HandState
-* Poker Evaluation
-* Scoring
-* Joker System
+| Symbol | Suit     |
+| ------ | -------- |
+| H      | Hearts   |
+| D      | Diamonds |
+| C      | Clubs    |
+| S      | Spades   |
 
 ---
 
-# 5. Deck System
+# 🎴 Deck System
 
-## Deck
-
-Deck bertanggung jawab mengelola seluruh kartu dalam permainan.
-
-### Responsibilities
+## Responsibilities
 
 * Membuat 52 kartu
 * Mengacak kartu
@@ -171,71 +182,71 @@ Deck bertanggung jawab mengelola seluruh kartu dalam permainan.
 
 ### Main Functions
 
-| Function     | Purpose               |
-| ------------ | --------------------- |
-| initialize() | Membuat 52 kartu      |
-| shuffle()    | Mengacak urutan kartu |
-| drawCard()   | Mengambil satu kartu  |
-| size()       | Menghitung sisa kartu |
-| isEmpty()    | Mengecek deck kosong  |
+```cpp
+initialize();
+shuffle();
+drawCard();
+size();
+isEmpty();
+```
 
 ---
 
-# 6. Hand System
+# ✋ Hand System
 
 ## HandState
 
-HandState menyimpan seluruh kartu yang sedang dimiliki pemain.
+Menyimpan kartu yang sedang dimiliki pemain.
 
 Contoh:
 
+```text
 [7♥] [K♣] [2♦] [A♠] [10♠]
-
----
+```
 
 ## ChosenHand
 
-ChosenHand menyimpan kartu yang dipilih pemain untuk dimainkan.
+Menyimpan kartu yang dipilih pemain untuk dimainkan.
 
 Contoh:
 
+```text
 [K♣] [A♠] [10♠]
+```
 
-Pemisahan antara HandState dan ChosenHand dilakukan agar pemain dapat memiliki banyak kartu tetapi hanya sebagian yang digunakan untuk scoring.
+Pemisahan ini memungkinkan pemain memiliki banyak kartu namun hanya sebagian yang digunakan untuk scoring.
 
 ---
 
-# 7. Player Interaction System
+# 👤 Player Interaction System
 
 ## HandPlayer
 
-HandPlayer bertanggung jawab untuk:
+Bertanggung jawab untuk:
 
-* Menampilkan kartu pemain
+* Menampilkan kartu
 * Membaca input pemain
-* Memvalidasi pilihan kartu
-* Membuat objek ChosenHand
+* Memvalidasi pilihan
+* Membuat ChosenHand
 
-### Contoh
+Contoh:
 
 ```text
 [1] A♠
 [2] K♥
 [3] 10♣
 
-Select cards:
+Select Cards:
 1 2 3
 ```
 
 ---
 
-# 8. Poker Evaluation System
+# ♣ Poker Hand Evaluation System
 
-Sistem evaluasi poker menggunakan Chain of Responsibility Pattern.
+Evaluasi kombinasi poker menggunakan **Chain of Responsibility Pattern**.
 
-Setiap checker bertanggung jawab untuk mengecek satu jenis kombinasi poker.
-
-### Checker List
+## Available Checkers
 
 * RoyalFlushChecker
 * StraightFlushChecker
@@ -250,9 +261,9 @@ Setiap checker bertanggung jawab untuk mengecek satu jenis kombinasi poker.
 
 ---
 
-# 9. Evaluation Priority
+# 📊 Evaluation Priority
 
-Urutan evaluasi dilakukan dari kombinasi tertinggi ke terendah.
+Urutan pengecekan dilakukan dari kombinasi tertinggi ke terendah.
 
 1. Royal Flush
 2. Straight Flush
@@ -265,17 +276,17 @@ Urutan evaluasi dilakukan dari kombinasi tertinggi ke terendah.
 9. Pair
 10. High Card
 
-Apabila tidak ada kombinasi yang cocok maka High Card digunakan sebagai hasil akhir.
+Jika tidak ada kombinasi yang cocok maka High Card digunakan sebagai hasil akhir.
 
 ---
 
-# 10. Scoring System
+# 💰 Scoring System
 
 ## ScoringRule
 
-ScoringRule menghitung skor dasar berdasarkan kombinasi poker yang diperoleh pemain.
+Menghitung skor dasar berdasarkan kombinasi kartu.
 
-Contoh tabel skor:
+### Example Score Table
 
 | Hand Type       | Score |
 | --------------- | ----- |
@@ -294,9 +305,9 @@ Contoh tabel skor:
 
 ## ScoreContext
 
-ScoreContext digunakan untuk menyimpan data skor yang dapat dimodifikasi oleh Joker.
+Digunakan untuk menyimpan data skor yang dapat dimodifikasi oleh Joker.
 
-Informasi yang disimpan:
+### Stored Data
 
 * Cards
 * Hand Type
@@ -306,76 +317,57 @@ Informasi yang disimpan:
 
 ---
 
-# 11. Joker System
+# 🎭 Joker System
 
-Joker System digunakan untuk memodifikasi skor yang dihasilkan oleh ScoringRule.
+Joker digunakan untuk memodifikasi skor yang dihasilkan oleh ScoringRule.
 
-Sistem ini menggunakan Decorator Pattern.
+Sistem ini menggunakan **Decorator Pattern**.
 
 ---
 
-## IScoring
+## Available Jokers
 
-Interface dasar untuk seluruh sistem scoring.
+### Basic Joker
 
-```cpp
-class IScoring
-{
-public:
-    virtual int calculateScore() = 0;
-};
+Memberikan bonus skor tetap.
+
+Contoh:
+
+```text
++20 Score
 ```
 
 ---
 
-## JokerDecorator
+### Spade Joker
 
-Decorator yang membungkus objek scoring.
-
-Tujuan:
-
-* Menambah efek tanpa mengubah ScoringRule.
-* Menjaga Open/Closed Principle.
-
----
-
-## BasicJoker
-
-Joker dasar yang memberikan bonus tetap.
+Memberikan bonus berdasarkan jumlah kartu Spade yang dimainkan.
 
 Contoh:
 
-+20 Score
+```text
++5 Score per Spade Card
+```
 
 ---
 
-## SpadeJoker
-
-Memberikan bonus berdasarkan jumlah kartu Spades.
-
-Contoh:
-
-+5 score untuk setiap kartu Spades.
-
----
-
-## GreedyJoker
+### Greedy Joker
 
 Memberikan multiplier tambahan apabila syarat tertentu terpenuhi.
 
 Contoh:
 
-x2 Score jika kombinasi Straight atau lebih tinggi.
+```text
+x2 Score
+```
 
 ---
 
-# 12. Shop System
+# 🏪 Shop System
 
-## Shop
+Shop memungkinkan pemain membeli Joker.
 
-Shop menyediakan Joker yang dapat dibeli pemain.
-
-Responsibilities:
+## Responsibilities
 
 * Menampilkan daftar Joker
 * Memproses pembelian
@@ -385,12 +377,7 @@ Responsibilities:
 
 ## JokerFactory
 
-Menggunakan Factory Pattern.
-
-Tujuan:
-
-* Membuat Joker secara dinamis
-* Menghindari pembuatan objek secara manual
+Menggunakan Factory Pattern untuk membuat objek Joker secara dinamis.
 
 Contoh:
 
@@ -400,156 +387,145 @@ createJoker(JokerType::Greedy);
 
 ---
 
-# 13. Blind Progression System
+# 🎯 Blind System
 
-Sistem Blind menggunakan State Pattern.
-
----
-
-## BlindState
-
-Interface dasar seluruh blind.
-
-```cpp
-class BlindState
-{
-public:
-    virtual int getTargetScore() = 0;
-};
-```
+Blind Progression menggunakan **State Pattern**.
 
 ---
 
-## SmallBlindState
+## Small Blind
 
-Target score paling rendah.
-
-Reward kecil.
+Blind awal dengan target score rendah.
 
 ---
 
-## BigBlindState
+## Big Blind
 
-Target score lebih tinggi dibanding Small Blind.
-
-Reward lebih besar.
+Blind menengah dengan target score lebih tinggi.
 
 ---
 
-## BossBlindState
+## Boss Blind
 
-Target score tertinggi.
+Blind tertinggi.
 
 Memiliki perilaku khusus:
 
-* menaikkan ante
-* mengulang siklus blind
+* Menaikkan ante
+* Mengulang siklus blind
 
 ---
 
-# 14. Reward System
+# 🎁 Reward System
 
-Reward System menggunakan Command Pattern.
-
----
+Reward System menggunakan **Command Pattern**.
 
 ## RewardCommand
 
-Interface dasar reward.
-
-```cpp
-class RewardCommand
-{
-public:
-    virtual void execute() = 0;
-};
-```
-
----
-
-## Responsibilities
-
-* Menyimpan efek reward
-* Menjalankan reward saat diperlukan
-* Mendukung deferred execution
-
----
-
-# 15. RunSessionState
-
-RunSessionState menyimpan seluruh data permainan yang sedang berlangsung.
-
-Informasi yang disimpan:
-
-* Current Blind
-* Current Score
-* Remaining Plays
-* Remaining Discards
-* Pending Rewards
-* Active Jokers
-
----
-
-# 16. Design Patterns
-
-## Chain of Responsibility
-
-Digunakan pada sistem evaluasi poker.
+Menyimpan efek reward yang dapat dijalankan saat diperlukan.
 
 Keuntungan:
 
-* Mudah menambah checker baru
-* Mengurangi if-else panjang
-* Setiap checker memiliki tanggung jawab tunggal
+* Mendukung deferred execution
+* Mudah menambah reward baru
+* Mengurangi branching
+
+---
+
+# 🧩 Design Patterns
+
+## Chain of Responsibility
+
+Digunakan untuk Poker Hand Evaluation.
+
+### Classes
+
+* PairChecker
+* TwoPairChecker
+* ThreeOfAKindChecker
+* StraightChecker
+* FlushChecker
+* FullHouseChecker
+* FourOfAKindChecker
+* StraightFlushChecker
+* RoyalFlushChecker
+* HighCardChecker
 
 ---
 
 ## Decorator Pattern
 
-Digunakan pada sistem Joker.
+Digunakan untuk Joker System.
 
-Keuntungan:
+### Classes
 
-* Efek dapat ditambahkan tanpa mengubah ScoringRule.
-* Mudah membuat Joker baru.
+* IScoring
+* JokerDecorator
+* BasicJoker
+* SpadeJoker
+* GreedyJoker
 
 ---
 
 ## Factory Pattern
 
-Digunakan pada JokerFactory.
+Digunakan untuk pembuatan Joker.
 
-Keuntungan:
+### Classes
 
-* Pembuatan objek Joker terpusat.
-* Mudah menambah tipe Joker baru.
+* JokerFactory
+* Shop
 
 ---
 
 ## State Pattern
 
-Digunakan pada BlindState.
+Digunakan untuk Blind Progression.
 
-Keuntungan:
+### Classes
 
-* Blind progression lebih modular.
-* Tidak memerlukan banyak if-else.
+* BlindState
+* SmallBlindState
+* BigBlindState
+* BossBlindState
 
 ---
 
 ## Command Pattern
 
-Digunakan pada RewardCommand.
+Digunakan untuk Reward System.
 
-Keuntungan:
+### Classes
 
-* Reward dapat dijalankan kapan saja.
-* Mendukung deferred reward.
+* RewardCommand
 
 ---
 
-# 17. Conclusion
+# 🚀 Future Improvements
 
-Balatro Clone berhasil mengimplementasikan sistem permainan kartu berbasis poker menggunakan bahasa C++. Sistem terdiri dari Deck System, Hand System, Poker Evaluation System, Scoring System, Joker System, Shop System, Blind Progression System, dan Reward System.
+Beberapa fitur yang dapat dikembangkan di masa depan:
 
-Project ini mengimplementasikan beberapa design pattern penting yaitu Chain of Responsibility, Decorator, Factory, State, dan Command Pattern sehingga arsitektur menjadi lebih modular, scalable, dan mudah dikembangkan pada versi berikutnya.
+* Additional Joker Variants
+* Additional Blind Types
+* Save & Load System
+* Multiple Round Session
+* GUI Version
+* Advanced Shop Features
+* More Poker Hand Types
+
+---
+
+# 👨‍💻 Authors
+
+Kelompok 11
+
+* Yorianmar Rahagi
+* [Nama Anggota 2]
+* [Nama Anggota 3]
+* [Nama Anggota 4]
+
+---
+
+# 📜 License
+
+This project was created for educational purposes and design pattern implementation practice.
