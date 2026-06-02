@@ -1,42 +1,68 @@
 #include <iostream>
 #include "GameManager.h"
-#include "HandGenerator.h"
-#include "HandPlayer.h"
-#include "ScoringRule.h"
-#include "BlindRule.h"
-#include "RewardRule.h"
-#include "ChosenHand.h"
-#include "IScoring.h"
-#include "Jokers/JollyJoker.h"
-#include "Jokers/SpadeJoker.h"
-#include "Jokers/GreedyJoker.h"
+#include "Jokers/JokerFactory.h"
+
+GameManager::GameManager() : playerMoney(0) {
+    // Memulai game dengan saldo awal $0
+}
 
 void GameManager::runSession() {
     std::cout << "=== Balatro Clone Started ===\n";
+    bool keepPlaying = true;
+    int round = 1;
 
-    Hand generatedHand = handGenerator.generateHand();
-    ChosenHand chosenHand = handPlayer.playHand(generatedHand);
-    Hand handToScore = chosenHand.toHand();
+    while (keepPlaying) {
+        std::cout << "\n====================================\n";
+        std::cout << "              ROUND " << round << "\n";
+        std::cout << "====================================\n";
 
-    // --- PROSES DECORATOR JOKER ---
-    // 1. Buat instansiasi kalkulator skor dasar
-    IScoring* gameScoring = new ScoringRule();
+        // 1. Jalankan gameplay mekanik kartu
+        Hand generatedHand = handGenerator.generateHand();
+        ChosenHand chosenHand = handPlayer.playHand(generatedHand);
+        Hand handToScore = chosenHand.toHand();
 
-    // 2. Bungkus secara bertumpuk (Membeli/Mengaktifkan Joker)
-    gameScoring = new JollyJoker(gameScoring);   // Bungkus ke-1
-    gameScoring = new SpadeJoker(gameScoring);  // Bungkus ke-2
-    gameScoring = new GreedyJoker(gameScoring);  // Bungkus ke-3 (Paling luar)
+        // 2. SYSTEM ARCHITECTURE: Pasang kalkulator skor dasar
+        IScoring* gameScoring = new ScoringRule();
 
-    // 3. Jalankan kalkulasi (Panggilan akan mengalir dari Greedy -> Spade -> Jolly -> ScoringRule)
-    int score = gameScoring->scoreHand(handToScore);
+        // 3. SYSTEM ARCHITECTURE: Gunakan Factory untuk membungkus dengan Joker milik pemain secara dinamis
+        for (JokerType joker : ownedJokers) {
+            gameScoring = JokerFactory::createJoker(joker, gameScoring);
+        }
 
-    // 4. Bersihkan memory
-    delete gameScoring; 
-    // ------------------------------
+        // 4. Kalkulasi skor dari tumpukan rantai Decorator -> Chain of Responsibility
+        int score = gameScoring->scoreHand(handToScore);
+        
+        // Selalu bersihkan memory alokasi runtime decorator setelah kalkulasi selesai
+        delete gameScoring; 
 
-    bool win = blindRule.checkBlind(score);
-    int reward = rewardRule.earnMoney(win, score);
+        // 5. Evaluasi hasil akhir round
+        bool win = blindRule.checkBlind(score);
+        int reward = rewardRule.earnMoney(win, score);
+        playerMoney += reward;
 
-    std::cout << "Money gained: " << reward << "\n";
-    std::cout << "=== Round Ended ===\n";
+        std::cout << "Uang terkumpul dari round ini: $" << reward << "\n";
+        std::cout << "Total Dompet Pemain: $" << playerMoney << "\n";
+
+        // 6. MEKANIK SHOP: Masuk ke toko jika menang round ini
+        if (win) {
+            std::cout << "\n[SISTEM] Target terpenuhi! Kamu berhak masuk ke Toko.\n";
+            shop.enterShop(playerMoney, ownedJokers);
+        } else {
+            std::cout << "\n[SISTEM] Gagal melewati target Blind. Tidak bisa mampir ke Toko.\n";
+        }
+
+        // Menu kendali loop game
+        char pilihan;
+        std::cout << "Lanjut bermain ke round berikutnya? (y/n): ";
+        std::cin >> pilihan;
+        std::cin.ignore(); // Membersihkan sisa buffer input enter
+
+        if (pilihan == 'n' || pilihan == 'N') {
+            keepPlaying = false;
+        } else {
+            round++;
+        }
+    }
+
+    std::cout << "\n=== Game Over / Sesi Berakhir ===\n";
 }
