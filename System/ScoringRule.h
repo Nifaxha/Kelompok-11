@@ -14,12 +14,12 @@
 #include "../System/TwoPairChecker.h"
 #include "../System/PairChecker.h"
 #include "../System/HighCardChecker.h"
+#include "IScoring.h"
 
-class ScoringRule{
+class ScoringRule : public IScoring {
 public:
     ScoringRule();
-    int scoreHand(const Hand& hand);
-
+    int scoreHand(const Hand& hand) override; // Tambahkan override
 private:
     FlushFiveChecker flushFiveChecker;
     FlushHouseChecker flushHouseChecker;
