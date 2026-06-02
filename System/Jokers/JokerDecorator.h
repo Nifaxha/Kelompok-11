@@ -1,5 +1,5 @@
 #pragma once
-#include "IScoring.h"
+#include "../IScoring.h"
 
 class JokerDecorator : public IScoring {
 protected:
