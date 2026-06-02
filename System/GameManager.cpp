@@ -38,9 +38,14 @@ void GameManager::runSession() {
         int targetScore = currentBlind->getTargetScore(sessionState.ante);
         int totalRoundScore = 0;
 
-        // 1. Tawarkan Menu Skip (Kecuali Boss Blind yang mengembalikan nullptr/Immediate execute)
+        // 1. Tawarkan Menu Skip
         char menuAwal;
         std::cout << "\nTarget Skor: " << targetScore << " | Hadiah: $" << currentBlind->getRewardMoney() << "\n";
+        
+        // --- BARIS BARU UNTUK MENAMPILKAN TAG REWARD ---
+        std::cout << "Tag Skip   : [" << currentBlind->getSkipRewardTag() << "]\n";
+        // -----------------------------------------------
+
         std::cout << "Aksi: [P]lay Blind | [S]kip Blind\n";
         std::cout << "Pilihanmu: ";
         std::cin >> menuAwal;
