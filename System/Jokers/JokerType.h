@@ -1,7 +1,7 @@
 #pragma once
 
 enum class JokerType {
-    JOLLY,
+    BASIC,
     SPADE,
     GREEDY
 };
