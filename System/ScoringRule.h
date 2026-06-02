@@ -15,12 +15,17 @@
 #include "../Mechanics/PairChecker.h"
 #include "../Mechanics/HighCardChecker.h"
 #include "IScoring.h"
+#include "IScoring.h"
+#include "PokerHandChecker.h"
 
 class ScoringRule : public IScoring {
 public:
     ScoringRule();
-    int scoreHand(const Hand& hand) override; // Tambahkan override
+    ScoreContext scoreHand(const Hand& hand) override; // Ubah int jadi ScoreContext
+
 private:
+    // ... (deklarasi checker biarkan sama)
+    ScoreContext convertRankToScore(HandRank rank); // Ubah int jadi ScoreContext
     FlushFiveChecker flushFiveChecker;
     FlushHouseChecker flushHouseChecker;
     FiveOfAKindChecker fiveOfAKindChecker;
