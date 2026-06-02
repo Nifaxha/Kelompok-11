@@ -1,6 +1,9 @@
 #include <iostream>
 #include "SpadeJoker.h"
 
+// BARIS INI YANG SEBELUMNYA TERLEWAT (Constructor)
+SpadeJoker::SpadeJoker(IScoring* scoring) : JokerDecorator(scoring) {}
+
 ScoreContext SpadeJoker::scoreHand(const Hand& hand) {
     ScoreContext ctx = JokerDecorator::scoreHand(hand);
     int spadeCount = 0;
