@@ -29,14 +29,19 @@ void GameManager::runSession() {
             gameScoring = JokerFactory::createJoker(joker, gameScoring);
         }
 
-        // 4. Kalkulasi skor dari tumpukan rantai Decorator -> Chain of Responsibility
-        int score = gameScoring->scoreHand(handToScore);
+        // 4. Kalkulasi skor dari tumpukan rantai Decorator
+        ScoreContext finalContext = gameScoring->scoreHand(handToScore);
+        int finalScore = finalContext.getFinalScore(); // Hitung Chips x Mult
         
-        // Selalu bersihkan memory alokasi runtime decorator setelah kalkulasi selesai
+        std::cout << "\n--- HASIL SKOR ---\n";
+        std::cout << "Chips: " << finalContext.chips << " x Mult: " << finalContext.mult << "\n";
+        std::cout << "TOTAL SKOR: " << finalScore << "\n";
+        std::cout << "------------------\n";
+
         delete gameScoring; 
 
-        // 5. Evaluasi hasil akhir round
-        bool win = blindRule.checkBlind(score);
+        // 5. Evaluasi hasil akhir round menggunakan finalScore
+        bool win = blindRule.checkBlind(finalScore);
         int reward = rewardRule.earnMoney(win, score);
         playerMoney += reward;
 
