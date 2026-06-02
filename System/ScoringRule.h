@@ -24,8 +24,6 @@ public:
     ScoreContext scoreHand(const Hand& hand) override; // Ubah int jadi ScoreContext
 
 private:
-    // ... (deklarasi checker biarkan sama)
-    ScoreContext convertRankToScore(HandRank rank); // Ubah int jadi ScoreContext
     FlushFiveChecker flushFiveChecker;
     FlushHouseChecker flushHouseChecker;
     FiveOfAKindChecker fiveOfAKindChecker;
