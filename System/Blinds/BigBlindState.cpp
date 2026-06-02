@@ -18,10 +18,9 @@ std::unique_ptr<BlindState> BigBlindState::nextState(int& ante) const {
     // Dideklarasikan langsung sebagai tipe induknya (BlindState)
     return std::unique_ptr<BlindState>(new BossBlindState());
 
-// ... (biarkan fungsi lainnya tetap sama)
+}
 
 // Tambahkan fungsi tag ini
 std::string BigBlindState::getSkipRewardTag() const {
     return "Bonus Hand (+1 Jatah Play di Blind berikutnya)";
-}
 }
