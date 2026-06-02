@@ -34,3 +34,14 @@ Card Deck::drawCard() {
 
 bool Deck::isEmpty() const { return drawPile.empty(); }
 int Deck::remainingCards() const { return drawPile.size(); }
+
+void Deck::addRandomCard() {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> rankDist(2, 14);
+    char suits[] = {'H', 'D', 'C', 'S'};
+    std::uniform_int_distribution<> suitDist(0, 3);
+    
+    drawPile.push_back({rankDist(gen), suits[suitDist(gen)]});
+    std::cout << "[SISTEM] 1 Kartu acak telah ditambahkan ke dalam Deck (Reward)!\n";
+}
