@@ -1,5 +1,15 @@
 #include <iostream>
 #include "GameManager.h"
+#include "HandGenerator.h"
+#include "HandPlayer.h"
+#include "ScoringRule.h"
+#include "BlindRule.h"
+#include "RewardRule.h"
+#include "ChosenHand.h"
+#include "IScoring.h"
+#include "Jokers/JollyJoker.h"
+#include "Jokers/SpadeJoker.h"
+#include "Jokers/GreedyJoker.h"
 
 void GameManager::runSession() {
     std::cout << "=== Balatro Clone Started ===\n";
@@ -14,10 +24,10 @@ void GameManager::runSession() {
 
     // 2. Bungkus secara bertumpuk (Membeli/Mengaktifkan Joker)
     gameScoring = new JollyJoker(gameScoring);   // Bungkus ke-1
-    gameScoring = new SpadesJoker(gameScoring);  // Bungkus ke-2
+    gameScoring = new SpadeJoker(gameScoring);  // Bungkus ke-2
     gameScoring = new GreedyJoker(gameScoring);  // Bungkus ke-3 (Paling luar)
 
-    // 3. Jalankan kalkulasi (Panggilan akan mengalir dari Greedy -> Spades -> Jolly -> ScoringRule)
+    // 3. Jalankan kalkulasi (Panggilan akan mengalir dari Greedy -> Spade -> Jolly -> ScoringRule)
     int score = gameScoring->scoreHand(handToScore);
 
     // 4. Bersihkan memory
@@ -29,5 +39,4 @@ void GameManager::runSession() {
 
     std::cout << "Money gained: " << reward << "\n";
     std::cout << "=== Round Ended ===\n";
-}
 }
