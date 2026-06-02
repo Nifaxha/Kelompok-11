@@ -6,11 +6,10 @@ int SmallBlindState::getTargetScore(int ante) const { return 300 * ante; }
 int SmallBlindState::getRewardMoney() const { return 3; }
 
 PendingCommand SmallBlindState::createSkipRewardCommand() const {
-    // Gunakan kurung biasa () dan std::unique_ptr(new ...)
     return PendingCommand(
-        CommandTiming::NextShop,
+        CommandTiming::NextAnte, // Menggunakan timing wajib dari dokumen[cite: 12]
         false,
-        std::unique_ptr<FreeRerollCommand>(new FreeRerollCommand())
+        std::unique_ptr<FreePlayingCard>(new FreePlayingCard()) // Memanggil FreePlayingCard[cite: 12]
     );
 }
 
