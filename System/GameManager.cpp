@@ -33,7 +33,7 @@ void GameManager::runSession() {
         sessionState.remainingDiscards = 3;
 
         // Eksekusi efek tertunda yang aktif di Blind Baru (Contoh: Bonus Hand)
-        executePendingCommands(CommandTiming::NextBlind);
+        executePendingCommands(CommandTiming::NextBlind, deck);
 
         int targetScore = currentBlind->getTargetScore(sessionState.ante);
         int totalRoundScore = 0;
@@ -123,7 +123,7 @@ void GameManager::runSession() {
             sessionState.playerMoney += currentBlind->getRewardMoney(); 
             
             // Eksekusi reward tertunda untuk Shop (Contoh: Free Reroll)
-            executePendingCommands(CommandTiming::NextShop);
+            executePendingCommands(CommandTiming::NextBlind, deck); // Pastikan untuk oper deck ke dalam command
             
             shop.enterShop(sessionState.playerMoney, ownedJokers);
             
@@ -132,7 +132,7 @@ void GameManager::runSession() {
             currentBlind = currentBlind->nextState(sessionState.ante);
             
             if (sessionState.ante > oldAnte) {
-                executePendingCommands(CommandTiming::NextAnte);
+                executePendingCommands(CommandTiming::NextAnte, deck);
             }
         } else {
             std::cout << "\n[SISTEM] GAME OVER! Skor " << totalRoundScore << " tidak mencapai " << targetScore << ".\n";
