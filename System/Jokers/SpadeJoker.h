@@ -4,5 +4,5 @@
 class SpadeJoker : public JokerDecorator {
 public:
     SpadeJoker(IScoring* scoring);
-    int scoreHand(const Hand& hand) override;
+    ScoreContext scoreHand(const Hand& hand) override;
 };
