@@ -1,14 +1,16 @@
 #pragma once
 #include <vector>
-#include "Deck.h"           // Menggantikan HandGenerator.h
-#include "HandState.h"      // Tambahkan ini
+#include <memory>
+#include "Deck.h"
+#include "HandState.h"
 #include "HandPlayer.h"
 #include "ScoringRule.h"
-#include "BlindRule.h"
-#include "RewardRule.h"
 #include "Jokers/JokerType.h"
 #include "Jokers/Shop.h"
 #include "ScoreContext.h"
+#include "Blinds/RunSessionState.h"
+#include "Blinds/BlindState.h"
+#include "Blinds/RewardCommand.h"
 
 class GameManager {
 public:
@@ -20,10 +22,14 @@ private:
     HandState handState;
     HandPlayer handPlayer;
     ScoringRule scoringRule;
-    BlindRule blindRule;
-    RewardRule rewardRule;
     Shop shop;
 
-    int playerMoney;
     std::vector<JokerType> ownedJokers;
+    
+    // Arsitektur Baru State
+    RunSessionState sessionState;
+    std::unique_ptr<BlindState> currentBlind;
+    std::vector<PendingCommand> pendingCommands;
+
+    void executePendingCommands(CommandTiming timing);
 };
