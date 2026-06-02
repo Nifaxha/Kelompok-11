@@ -31,5 +31,6 @@ private:
     std::unique_ptr<BlindState> currentBlind;
     std::vector<PendingCommand> pendingCommands;
 
-    void executePendingCommands(CommandTiming timing);
+    // Ubah deklarasinya
+    void executePendingCommands(CommandTiming timing, Deck& deck);
 };
