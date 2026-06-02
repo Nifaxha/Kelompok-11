@@ -1,6 +1,5 @@
 #pragma once
 #include "Hand.h"
-#include "../Mechanics/FiveOfAKindChecker.h"
 #include "../Mechanics/FlushFiveChecker.h"
 #include "../Mechanics/FlushHouseChecker.h"
 #include "../Mechanics/FiveOfAKindChecker.h"
@@ -15,13 +14,13 @@
 #include "../Mechanics/PairChecker.h"
 #include "../Mechanics/HighCardChecker.h"
 #include "IScoring.h"
-#include "IScoring.h"
+#include "ScoreContext.h"
 #include "PokerHandChecker.h"
 
 class ScoringRule : public IScoring {
 public:
     ScoringRule();
-    ScoreContext scoreHand(const Hand& hand) override; // Ubah int jadi ScoreContext
+    ScoreContext scoreHand(const Hand& hand) override;
 
 private:
     FlushFiveChecker flushFiveChecker;
@@ -38,5 +37,6 @@ private:
     PairChecker pairChecker;
     HighCardChecker highCardChecker;
 
-    int convertRankToScore(HandRank rank);
+    // PERBAIKAN: Ubah tipe kembalian dari int menjadi ScoreContext
+    ScoreContext convertRankToScore(HandRank rank); 
 };
