@@ -6,13 +6,14 @@ int SmallBlindState::getTargetScore(int ante) const { return 300 * ante; }
 int SmallBlindState::getRewardMoney() const { return 3; }
 
 PendingCommand SmallBlindState::createSkipRewardCommand() const {
+    // Sesuai dokumen dan aman untuk C++11
     return PendingCommand(
-        CommandTiming::NextAnte, // Menggunakan timing wajib dari dokumen[cite: 12]
+        CommandTiming::NextAnte, 
         false,
-        std::unique_ptr<FreePlayingCard>(new FreePlayingCard()) // Memanggil FreePlayingCard[cite: 12]
+        std::unique_ptr<FreePlayingCard>(new FreePlayingCard())
     );
 }
 
 std::unique_ptr<BlindState> SmallBlindState::nextState(int& ante) const {
-    return std::make_unique<BigBlindState>();
+    return std::unique_ptr<BigBlindState>(new BigBlindState());
 }
