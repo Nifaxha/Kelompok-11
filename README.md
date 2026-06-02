@@ -534,8 +534,8 @@ Beberapa fitur yang dapat dikembangkan di masa depan:
 
 Kelompok 11
 
-- Yorianmar Rahagi
-- Dwi Haris Riza Darmawan
+- Yorianmar Rahagi 085
+- Dwi Haris Riza Darmawan 086
 
 ---
 
