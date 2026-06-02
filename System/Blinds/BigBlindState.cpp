@@ -6,14 +6,15 @@ int BigBlindState::getTargetScore(int ante) const { return 500 * ante; }
 int BigBlindState::getRewardMoney() const { return 4; }
 
 PendingCommand BigBlindState::createSkipRewardCommand() const {
-    // Ubah ke format constructor biasa agar tidak error
     return PendingCommand(
         CommandTiming::NextBlind,
         false,
-        std::unique_ptr<BonusHandCommand>(new BonusHandCommand())
+        // Dideklarasikan langsung sebagai tipe induknya (RewardCommand)
+        std::unique_ptr<RewardCommand>(new BonusHandCommand())
     );
 }
 
 std::unique_ptr<BlindState> BigBlindState::nextState(int& ante) const {
-    return std::unique_ptr<BossBlindState>(new BossBlindState());
+    // Dideklarasikan langsung sebagai tipe induknya (BlindState)
+    return std::unique_ptr<BlindState>(new BossBlindState());
 }
