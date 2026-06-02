@@ -1,26 +1,16 @@
 #include <iostream>
 #include "SpadeJoker.h"
-#include "JokerDecorator.h"
-#include "../IScoring.h"
 
-SpadeJoker::SpadeJoker(IScoring* scoring) : JokerDecorator(scoring) {}
-
-int SpadeJoker::scoreHand(const Hand& hand) {
-    int baseScore = JokerDecorator::scoreHand(hand);
+ScoreContext SpadeJoker::scoreHand(const Hand& hand) {
+    ScoreContext ctx = JokerDecorator::scoreHand(hand);
     int spadeCount = 0;
-
-    // Iterasi untuk mengecek kembang setiap kartu yang dimainkan
     for (const Card& card : hand.cards) {
-        if (card.suit == 'S' || card.suit == 's') {
-            spadeCount++;
-        }
+        if (card.suit == 'S' || card.suit == 's') spadeCount++;
     }
-
     if (spadeCount > 0) {
-        int bonus = spadeCount * 5;
-        std::cout << "[Joker Active] Spade Joker: Mendeteksi " << spadeCount << " kartu Sekop. Bonus +" << bonus << "\n";
-        return baseScore + bonus;
+        int bonusMult = spadeCount * 4;
+        std::cout << "[JOKER] Spade Joker mendeteksi " << spadeCount << " Sekop: +" << bonusMult << " Mult!\n";
+        ctx.mult += bonusMult;
     }
-
-    return baseScore;
+    return ctx;
 }
