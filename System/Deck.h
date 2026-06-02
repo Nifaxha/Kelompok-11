@@ -12,6 +12,5 @@ public:
     Card drawCard();
     bool isEmpty() const;
     int remainingCards() const;
-
-void addRandomCard();
+    void addRandomCard();
 };
