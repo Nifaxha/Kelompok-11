@@ -3,10 +3,11 @@
 
 JollyJoker::JollyJoker(IScoring* scoring) : JokerDecorator(scoring) {}
 
-int JollyJoker::scoreHand(const Hand& hand) {
-    // Ambil skor dari proses sebelumnya (bisa dari ScoringRule atau Joker lain)
-    int baseScore = JokerDecorator::scoreHand(hand); 
+ScoreContext JollyJoker::scoreHand(const Hand& hand) {
+    ScoreContext ctx = JokerDecorator::scoreHand(hand); // Tarik data chips & mult
     
-    std::cout << "[Joker Active] Jolly Joker: Memberikan +20 Skor!\n";
-    return baseScore + 20;
+    std::cout << "[Joker Active] Jolly Joker: Memberikan +4 Multiplier!\n";
+    ctx.mult += 4; // Hanya ubah multiplier
+    
+    return ctx;
 }
