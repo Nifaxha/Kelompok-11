@@ -9,11 +9,11 @@ GameManager::GameManager() {
     currentBlind = std::make_unique<SmallBlindState>(); // Mulai dari Small Blind
 }
 
-void GameManager::executePendingCommands(CommandTiming timing) {
+void GameManager::executePendingCommands(CommandTiming timing, Deck& currentDeck) {
     for (auto& pending : pendingCommands) {
         if (!pending.executed && pending.timing == timing && pending.command != nullptr) {
             std::cout << "[REWARD TERPICU] Mengeksekusi: " << pending.command->getName() << "\n";
-            pending.command->execute(sessionState);
+            pending.command->execute(sessionState, currentDeck); // Operkan currentDeck ke dalam command
             pending.executed = true;
         }
     }
