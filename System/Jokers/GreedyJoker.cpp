@@ -1,6 +1,9 @@
 #include <iostream>
 #include "GreedyJoker.h"
 
+// BARIS INI YANG SEBELUMNYA TERLEWAT (Constructor)
+GreedyJoker::GreedyJoker(IScoring* scoring) : JokerDecorator(scoring) {}
+
 ScoreContext GreedyJoker::scoreHand(const Hand& hand) {
     ScoreContext ctx = JokerDecorator::scoreHand(hand);
     // Jika chips dari kombinasi kartu >= 30 (Straight ke atas)
