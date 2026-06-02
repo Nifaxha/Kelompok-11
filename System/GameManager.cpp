@@ -6,7 +6,7 @@
 GameManager::GameManager() {
     sessionState.ante = 1;
     sessionState.playerMoney = 0;
-    currentBlind = std::make_unique<SmallBlindState>(); // Mulai dari Small Blind
+    currentBlind = std::unique_ptr<BlindState>(new SmallBlindState());
 }
 
 void GameManager::executePendingCommands(CommandTiming timing, Deck& currentDeck) {
