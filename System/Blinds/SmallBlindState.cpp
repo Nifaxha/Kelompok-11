@@ -17,4 +17,11 @@ PendingCommand SmallBlindState::createSkipRewardCommand() const {
 std::unique_ptr<BlindState> SmallBlindState::nextState(int& ante) const {
     // Dideklarasikan langsung sebagai tipe induknya (BlindState)
     return std::unique_ptr<BlindState>(new BigBlindState());
+
+    // ... (biarkan fungsi lainnya tetap sama)
+
+// Tambahkan fungsi tag ini
+std::string SmallBlindState::getSkipRewardTag() const {
+    return "Free Playing Card (Ditambahkan ke Deck di Ante berikutnya)";
+}
 }
