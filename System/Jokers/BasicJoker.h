@@ -1,8 +1,8 @@
 #pragma once
 #include "JokerDecorator.h"
 
-class JollyJoker : public JokerDecorator {
+class BasicJoker : public JokerDecorator {
 public:
-    JollyJoker(IScoring* scoring);
+    BasicJoker(IScoring* scoring);
     ScoreContext scoreHand(const Hand& hand) override;
 };
