@@ -5,22 +5,19 @@ std::string SmallBlindState::getName() const { return "Small Blind"; }
 int SmallBlindState::getTargetScore(int ante) const { return 300 * ante; }
 int SmallBlindState::getRewardMoney() const { return 3; }
 
+std::string SmallBlindState::getSkipRewardTag() const {
+    return "+3 Hand Size for the next round only.\nCan be stacked multiple times on the same round, each adding an additional +3 Hand size.";
+}
+
 PendingCommand SmallBlindState::createSkipRewardCommand() const {
     return PendingCommand(
-        CommandTiming::NextAnte, 
+        CommandTiming::NextBlind,  // Berubah menjadi NextBlind (Ronde berikutnya)
         false,
-        // Dideklarasikan langsung sebagai tipe induknya (RewardCommand)
-        std::unique_ptr<RewardCommand>(new FreePlayingCard())
+        // Berubah menjadi BonusHandSizeCommand
+        std::unique_ptr<RewardCommand>(new BonusHandSizeCommand()) 
     );
 }
 
 std::unique_ptr<BlindState> SmallBlindState::nextState(int& ante) const {
-    // Dideklarasikan langsung sebagai tipe induknya (BlindState)
     return std::unique_ptr<BlindState>(new BigBlindState());
-
-}
-
-// Tambahkan fungsi tag ini
-std::string SmallBlindState::getSkipRewardTag() const {
-    return "Free Playing Card (Ditambahkan ke Deck di Ante berikutnya)";
 }

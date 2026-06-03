@@ -1,18 +1,10 @@
 #include <iostream>
 #include "HandState.h"
 
-void HandState::drawFromDeck(Deck& deck) {
-    int cardsNeeded = maxHandSize - activeCards.size();
-    int cardsDrawn = 0;
-
-    while (cardsNeeded > 0 && !deck.isEmpty()) {
+void HandState::drawFromDeck(Deck& deck, int maxHandSize) {
+    int cardsNeeded = maxHandSize - static_cast<int>(activeCards.size()); // fill up to max hand size
+    for (int i = 0; i < cardsNeeded && !deck.isEmpty(); ++i) {
         activeCards.push_back(deck.drawCard());
-        cardsNeeded--;
-        cardsDrawn++;
-    }
-    
-    if (cardsDrawn > 0) {
-        std::cout << "[SISTEM] Menarik " << cardsDrawn << " kartu. Sisa Deck: " << deck.remainingCards() << "\n";
     }
 }
 

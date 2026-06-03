@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include <memory>
 #include "RunSessionState.h"
 #include "../Deck.h" // Tambahkan ini agar command bisa modifikasi deck
@@ -22,12 +23,13 @@ public:
 };
 
 // --- Implementasi Command ---
-class BonusHandCommand : public RewardCommand {
+class BonusHandSizeCommand : public RewardCommand {
 public:
-    std::string getName() const override { return "Bonus Hand"; }
-    std::string getDescription() const override { return "Gain +1 hand next blind."; }
+    std::string getName() const override { return "Bonus Hand Size"; }
+    std::string getDescription() const override { return "+3 Hand Size for the next round only."; }
     void execute(RunSessionState& state, Deck& deck) override {
-        state.remainingPlays += 1;
+        state.extraHandSize += 3;
+        std::cout << "[REWARD] Kapasitas Hand Size bertambah +3 untuk ronde ini!\n";
     }
 };
 
