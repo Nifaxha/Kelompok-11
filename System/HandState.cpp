@@ -28,4 +28,7 @@ void HandState::removePlayedCards(const ChosenHand& chosen) {
 
 void HandState::clearHand() {
     activeCards.clear();
+    std::cout << "[AKSI] " << indices.size() << " kartu berhasil di-discard.\n";
+    notifyObservers("DISCARD"); // <--- Penyiaran terjadi di sini!
+}
 }

@@ -64,14 +64,30 @@ void GameManager::runSession() {
             }
         }
 
-        // 2. Setup Permainan Jika Tidak Di-Skip
-        deck.resetAndShuffle();
-        handState.clearHand();
-        handState.drawFromDeck(deck, 8 + sessionState.extraHandSize);
-        bool win = false;
 
+        ScoringRule baseScoringRule;
+        IScoring* scoringSystem = &baseScoringRule;
+        std::vector<IScoring*> activeJokers; 
+
+        for (JokerType jt : ownedJokers) {
+            scoringSystem = JokerFactory::createJoker(jt, scoringSystem);
+            activeJokers.push_back(scoringSystem);
+
+            // C++ Magic: Cek apakah Joker ini adalah seorang Observer?
+            if (IObserver* obs = dynamic_cast<IObserver*>(scoringSystem)) {
+                handState.addObserver(obs); // Jika iya, pasang telinganya!
+            }
+        }
+
+        // 2. Setup Permainan Jika Tidak Di-Skip
+        bool roundActive = true;
+        deck.resetAndShuffle();
+        handState.currentHand.cards.clear();
+        handState.drawFromDeck(deck, 8 + sessionState.extraHandSize); 
+
+        
         // 3. INNER LOOP: Fase Permainan Kartu
-        while (sessionState.remainingPlays > 0 && !win) {
+         while (roundActive && sessionState.remainingPlays > 0) {
             std::cout << "\n[ STATUS: " << currentBlind->getName() << " ]\n";
             std::cout << "Skor Saat Ini : " << totalRoundScore << " / " << targetScore << "\n";
             std::cout << "Sisa Play [" << sessionState.remainingPlays << "] | Sisa Discard [" << sessionState.remainingDiscards << "]\n";

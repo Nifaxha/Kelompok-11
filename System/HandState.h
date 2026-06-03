@@ -4,15 +4,18 @@
 #include "Hand.h"
 #include "Deck.h"
 #include "ChosenHand.h"
+#include "Subject.h"
 
 class HandState {
 private:
     std::vector<Card> activeCards;
     int maxHandSize = 8; // Batas maksimal kartu di tangan
 
+class HandState : public Subject { // Warisi Subject di sini
 public:
-    void drawFromDeck(Deck& deck, int maxHandSize);
-    Hand getHandAsStruct() const; 
-    void removePlayedCards(const ChosenHand& chosen);
-    void clearHand();
+    Hand currentHand;
+    void drawFromDeck(Deck& deck, int maxHandSize); 
+    void discard(const std::vector<int>& indices);
+    void removeCards(const std::vector<int>& indices);
 };
+}
