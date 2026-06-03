@@ -11,7 +11,7 @@ private:
     int maxHandSize = 8; // Batas maksimal kartu di tangan
 
 public:
-    void drawFromDeck(Deck& deck);
+    void drawFromDeck(Deck& deck, int maxHandSize);
     Hand getHandAsStruct() const; 
     void removePlayedCards(const ChosenHand& chosen);
     void clearHand();

@@ -31,6 +31,7 @@ void GameManager::runSession() {
         // Reset resource standar untuk Blind baru
         sessionState.remainingPlays = 4;
         sessionState.remainingDiscards = 3;
+        sessionState.extraHandSize = 0;
 
         // Eksekusi efek tertunda yang aktif di Blind Baru (Contoh: Bonus Hand)
         executePendingCommands(CommandTiming::NextBlind, deck);
@@ -66,7 +67,7 @@ void GameManager::runSession() {
         // 2. Setup Permainan Jika Tidak Di-Skip
         deck.resetAndShuffle();
         handState.clearHand();
-        handState.drawFromDeck(deck);
+        handState.drawFromDeck(deck, 8 + sessionState.extraHandSize);
         bool win = false;
 
         // 3. INNER LOOP: Fase Permainan Kartu
@@ -87,7 +88,7 @@ void GameManager::runSession() {
                 if (sessionState.remainingDiscards > 0) {
                     handState.removePlayedCards(chosenHand);
                     std::cout << "[SISTEM] Membuang " << chosenHand.selectedCards.size() << " kartu.\n";
-                    handState.drawFromDeck(deck);
+                    handState.drawFromDeck(deck, 8 + sessionState.extraHandSize);
                     sessionState.remainingDiscards--;
                 } else {
                     std::cout << "[SISTEM] Discard habis!\n";
@@ -117,7 +118,7 @@ void GameManager::runSession() {
                 if (totalRoundScore >= targetScore) {
                     win = true;
                 } else if (sessionState.remainingPlays > 0) {
-                    handState.drawFromDeck(deck);
+                    handState.drawFromDeck(deck, 8 + sessionState.extraHandSize);
                 }
             }
         } // Akhir Inner Loop
@@ -154,10 +155,10 @@ void GameManager::runSession() {
             continue;
         }
 
-        char pilihanLanjut;
-        std::cout << "Lanjut bermain? (y/n): ";
-        std::cin >> pilihanLanjut;
-        std::cin.ignore(); 
-        if (pilihanLanjut == 'n' || pilihanLanjut == 'N') keepPlaying = false;
+        // char pilihanLanjut;
+        // std::cout << "Lanjut bermain? (y/n): ";
+        // std::cin >> pilihanLanjut;
+        // std::cin.ignore(); 
+        // if (pilihanLanjut == 'n' || pilihanLanjut == 'N') keepPlaying = false;
     }
 }

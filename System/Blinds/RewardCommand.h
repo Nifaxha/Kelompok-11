@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include <memory>
 #include "RunSessionState.h"
-#include "../Deck.h" // Tambahkan ini agar command bisa modifikasi deck
+#include "../Deck.h" 
 
-// Enum Timing diubah sesuai dokumen PDF
 enum class CommandTiming {
     Start,
     NextBlind,
@@ -17,11 +17,12 @@ public:
     virtual std::string getName() const = 0;
     virtual std::string getDescription() const = 0;
     
-    // Tambahkan parameter Deck& 
     virtual void execute(RunSessionState& state, Deck& deck) = 0; 
 };
 
 // --- Implementasi Command ---
+
+// 1. Command yang sempat hilang (Digunakan oleh Big Blind)
 class BonusHandCommand : public RewardCommand {
 public:
     std::string getName() const override { return "Bonus Hand"; }
@@ -31,7 +32,18 @@ public:
     }
 };
 
-// Ubah FreeReroll menjadi FreePlayingCard sesuai PDF
+// 2. Command baru untuk ekstra kapasitas tangan (Digunakan oleh Small Blind)
+class BonusHandSizeCommand : public RewardCommand {
+public:
+    std::string getName() const override { return "Bonus Hand Size"; }
+    std::string getDescription() const override { return "+3 Hand Size for the next round only."; }
+    void execute(RunSessionState& state, Deck& deck) override {
+        state.extraHandSize += 3;
+        std::cout << "[REWARD] Kapasitas Hand Size bertambah +3 untuk ronde ini!\n";
+    }
+};
+
+// 3. Command kartu gratis (Bisa kamu gunakan jika ingin mengganti reward blind lain nanti)
 class FreePlayingCard : public RewardCommand {
 public:
     std::string getName() const override { return "Free Playing Card"; }

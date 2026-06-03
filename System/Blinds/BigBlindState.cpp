@@ -1,5 +1,6 @@
 #include "BigBlindState.h"
 #include "BossBlindState.h"
+#include "RewardCommand.h"
 
 std::string BigBlindState::getName() const { return "Big Blind"; }
 int BigBlindState::getTargetScore(int ante) const { return 500 * ante; }
