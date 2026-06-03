@@ -123,9 +123,18 @@ void GameManager::runSession() {
         } // Akhir Inner Loop
 
         // 4. Evaluasi Akhir Ronde
+        // 4. Evaluasi Akhir Ronde
+       // 4. Evaluasi Akhir Ronde
         if (win) {
             std::cout << "\n[SISTEM] BLIND DEFEATED! (" << totalRoundScore << " / " << targetScore << ")\n";
-            sessionState.playerMoney += currentBlind->getRewardMoney(); 
+            
+            // --- BAGIAN YANG DIUBAH/DITAMBAH ---
+            sessionState.playerMoney += currentBlind->getRewardMoney(); // Uang dasar dari blind
+            sessionState.playerMoney += sessionState.remainingPlays;    // Bonus $1 dari setiap sisa jatah Play
+            
+            std::cout << "Mendapat bonus sisa Play: +$" << sessionState.remainingPlays << "\n";
+            std::cout << "Dompetmu sekarang: $" << sessionState.playerMoney << "\n";
+            // -----------------------------------
             
             // Eksekusi reward tertunda untuk Shop (Contoh: Free Reroll)
             executePendingCommands(CommandTiming::NextBlind, deck); // Pastikan untuk oper deck ke dalam command
